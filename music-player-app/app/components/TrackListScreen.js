@@ -1,8 +1,14 @@
 import React from "react";
-import { StyleSheet, Text, View, FlatList, TouchableHighlight } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  TouchableHighlight
+} from "react-native";
 import { Actions } from "react-native-router-flux";
 
-const TrackList = ({ tracks }) => {
+const TrackList = ({ tracks, onPressTrackListItem }) => {
   const atLeastOneTrack = tracks[0];
   return (
     <View style={styles.container}>
@@ -13,11 +19,18 @@ const TrackList = ({ tracks }) => {
         <FlatList
           style={styles.trackList}
           data={tracks}
-          renderItem={track => (
-            <TouchableHighlight style={styles.trackListItem}>
-              <Text style={styles.trackListItemText}>{track.item.trackName}</Text>
-            </TouchableHighlight>
-          )}
+          renderItem={({ item }) => {
+            const trackName = item.trackName;
+            return (
+              <TouchableHighlight
+                style={styles.trackListItem}
+                onPress={(event) => onPressTrackListItem(event, trackName)}
+                underlayColor="#61DAFB"
+              >
+                <Text style={styles.trackListItemText}>{trackName}</Text>
+              </TouchableHighlight>
+            );
+          }}
         />
       ) : (
         <Text>loading...</Text>
@@ -45,9 +58,15 @@ const styles = StyleSheet.create({
   trackList: {
     width: "100%"
   },
-  trackListItem: { paddingBottom: 20, paddingTop: 20, width: "100%", borderBottomWidth: 1, borderBottomColor: "black" },
+  trackListItem: {
+    paddingBottom: 20,
+    paddingTop: 20,
+    width: "100%",
+    borderBottomWidth: 1,
+    borderBottomColor: "black"
+  },
   trackListItemText: {
-    color: "black", 
+    color: "black",
     fontSize: 16
   }
 });

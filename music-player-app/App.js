@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import { StyleSheet } from "react-native";
-import { Router, Scene, Stack } from "react-native-router-flux";
+import { Router, Scene, Actions } from "react-native-router-flux";
 import TrackList from "./app/components/TrackListScreen";
 import AudioPlayer from "./app/components/AudioPlayer";
 
 class App extends Component {
   state = {
-    tracks: []
+    tracks: [],
+    currentTrackList: []
   };
   async fetchAudioTracks() {
     const response = await fetch(
@@ -28,6 +29,18 @@ class App extends Component {
       tracks: tracks
     });
   }
+
+  onPressTrackListItem = (event, trackName) => {
+    const songIndex = this.state.tracks.findIndex(track => {
+      return track.trackName === trackName;
+    });
+    const newTrackList = this.state.tracks
+      .slice(songIndex)
+      .concat(this.state.tracks.slice(0, songIndex));
+    this.setState({currentTrackList: newTrackList}, () => {
+      Actions.AudioPlayer()
+    })
+  };
   render() {
     return (
       <Router>
@@ -36,13 +49,22 @@ class App extends Component {
             <Scene
               key="TrackListScreen"
               title="Track List Screen"
-              component={() => <TrackList tracks={this.state.tracks} />}
+              component={() => (
+                <TrackList
+                  tracks={this.state.tracks}
+                  onPressTrackListItem={this.onPressTrackListItem}
+                />
+              )}
               initial
             />
             <Scene
               key="AudioPlayer"
               title="AudioPlayer"
-              component={AudioPlayer}
+              component={() => (
+                <AudioPlayer
+                  tracks={this.state.currentTrackList}
+                />
+              )}
             />
           </Scene>
           <Scene key="second" title="2" hideNavBar>
