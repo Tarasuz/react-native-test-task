@@ -3,6 +3,7 @@ import { StyleSheet } from "react-native";
 import { Router, Scene, Actions } from "react-native-router-flux";
 import TrackList from "./app/components/TrackListScreen";
 import AudioPlayer from "./app/components/AudioPlayer";
+import DummyComponent from "./app/components/DummyComponent";
 
 class App extends Component {
   state = {
@@ -37,18 +38,23 @@ class App extends Component {
     const newTrackList = this.state.tracks
       .slice(songIndex)
       .concat(this.state.tracks.slice(0, songIndex));
-    this.setState({currentTrackList: newTrackList}, () => {
-      Actions.AudioPlayer()
-    })
+    this.setState({ currentTrackList: newTrackList }, () => {
+      Actions.AudioPlayer();
+    });
   };
   render() {
     return (
       <Router>
-        <Scene key="root" tabs tabBarStyle={styles.tabBar}>
-          <Scene key="first" title="1" initial hideNavBar>
+        <Scene
+          key="root"
+          tabs
+          tabBarStyle={styles.tabBar}
+          headerLayoutPreset="center"
+        >
+          <Scene key="first" title="1" initial tabBarLabel="">
             <Scene
               key="TrackListScreen"
-              title="Track List Screen"
+              title="Track List"
               component={() => (
                 <TrackList
                   tracks={this.state.tracks}
@@ -59,10 +65,11 @@ class App extends Component {
             />
             <Scene
               key="AudioPlayer"
-              title="AudioPlayer"
+              title="Audio Player"
               component={() => (
                 <AudioPlayer
                   tracks={this.state.currentTrackList}
+                  shutdownPlayer={this.shutdownPlayer}
                 />
               )}
             />
@@ -71,39 +78,24 @@ class App extends Component {
             <Scene
               key="TrackListScreen"
               title="Track List Screen"
-              component={TrackList}
+              component={DummyComponent}
               initial
-            />
-            <Scene
-              key="AudioPlayer"
-              title="AudioPlayer"
-              component={AudioPlayer}
             />
           </Scene>
           <Scene key="third" title="3" hideNavBar>
             <Scene
               key="TrackListScreen"
               title="Track List Screen"
-              component={TrackList}
+              component={DummyComponent}
               initial
-            />
-            <Scene
-              key="AudioPlayer"
-              title="AudioPlayer"
-              component={AudioPlayer}
             />
           </Scene>
           <Scene key="fourth" title="4" hideNavBar>
             <Scene
               key="TrackListScreen"
               title="Track List Screen"
-              component={TrackList}
+              component={DummyComponent}
               initial
-            />
-            <Scene
-              key="AudioPlayer"
-              title="AudioPlayer"
-              component={AudioPlayer}
             />
           </Scene>
         </Scene>
@@ -114,7 +106,7 @@ class App extends Component {
 
 const styles = StyleSheet.create({
   tabBar: {
-    backgroundColor: "#61DAFB"
+    backgroundColor: "black"
   }
 });
 

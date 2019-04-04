@@ -54,24 +54,23 @@ export default class App extends Component {
   PLAYLIST = this.props.tracks.map(track => {
     return new PlaylistItem(track.trackName, track.previewURL);
   });
-
-  handleBackPress = () => {
+  pauseAudioPlayerBeforeExiting = () => {
     if (this.playbackInstance != null) {
       if (this.state.isPlaying) {
         this.playbackInstance.pauseAsync();
       }
     }
   };
+  handleBackPress = () => {
+    this.pauseAudioPlayerBeforeExiting();
+  };
   onPressBackButtom = () => {
-    if (this.playbackInstance != null) {
-      if (this.state.isPlaying) {
-        this.playbackInstance.pauseAsync();
-      }
-    }
+    this.pauseAudioPlayerBeforeExiting();
     Actions.TrackListScreen();
   };
 
   componentWillUnmount() {
+    this.pauseAudioPlayerBeforeExiting();
     BackHandler.removeEventListener("hardwareBackPress", this.handleBackPress);
   }
 
@@ -409,16 +408,7 @@ export default class App extends Component {
           <View>
             <MaterialIcons name="call-made" size={40} color="#56D5FA" />
           </View>
-        </View>  
-        <TouchableHighlight
-          style={styles.BackButton}
-          onPress={this.onPressBackButtom}
-          underlayColor="#61DAFB"
-        >
-          <View style={styles.BackButton}>
-            <Text style={{ color: "white", textAlignVertical: "center", fontSize: 16}}>Playlist</Text>
-          </View>
-        </TouchableHighlight>
+        </View>
       </View>
     );
   }
@@ -493,14 +483,5 @@ const styles = StyleSheet.create({
   },
   rateSlider: {
     width: DEVICE_WIDTH - 80
-  },
-  BackButton: {
-    flex: 0.2,
-    alignItems: "center",
-    justifyContent: "center",
-    height: 20,
-    width: 100,
-    marginBottom: 20,
-    backgroundColor: "#61DAFB"
   }
 });
